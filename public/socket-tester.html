@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TeamHub Socket Tester</title>
+<script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
+<style>
+  body { font-family: monospace; max-width: 720px; margin: 40px auto; padding: 0 16px; }
+  fieldset { margin-bottom: 20px; }
+  input { display: block; width: 100%; margin: 4px 0 10px; padding: 6px; box-sizing: border-box; }
+  button { padding: 6px 14px; cursor: pointer; }
+  #log { background: #111; color: #0f0; padding: 10px; height: 260px; overflow-y: auto; font-size: 13px; white-space: pre-wrap; }
+  #status { font-weight: bold; }
+  .ok { color: green; }
+  .bad { color: red; }
+</style>
+</head>
+<body>
+
+<h2>TeamHub Socket.IO Tester</h2>
+<p>Status: <span id="status" class="bad">disconnected</span></p>
+
+<fieldset>
+  <legend>1. Log in (REST)</legend>
+  <input id="email" placeholder="email">
+  <input id="password" type="password" placeholder="password">
+  <button onclick="login()">Log in</button>
+  <div id="loginResult"></div>
+</fieldset>
+
+<fieldset>
+  <legend>2. Connect socket with the token from step 1</legend>
+  <button onclick="connectSocket()">Connect</button>
+</fieldset>
+
+<fieldset>
+  <legend>3. Join a board room</legend>
+  <input id="boardId" placeholder="board _id to watch">
+  <button onclick="joinBoard()">board:join</button>
+</fieldset>
+
+<fieldset>
+  <legend>4. Create a task in that board (REST) - watch the log below</legend>
+  <input id="taskTitle" placeholder="task title" value="Test task">
+  <input id="assignedTo" placeholder="assignedTo user _id (optional)">
+  <button onclick="createTask()">POST /tasks/CreateTask</button>
+</fieldset>
+
+<h3>Live event log</h3>
+<div id="log"></div>
+
+<script>
+let socket = null;
+let token = null;
+
+function log(msg) {
+  const el = document.getElementById('log');
+  el.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+  el.scrollTop = el.scrollHeight;
+}
+
+async function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const res = await fetch('/api/v1/authentication/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+  if (data.smallTermToken) {
+    token = data.smallTermToken;
+    document.getElementById('loginResult').textContent =
+      `logged in as ${data.loginData.username} (id: ${data.loginData.id})`;
+    log('REST login succeeded, token stored');
+  } else {
+    document.getElementById('loginResult').textContent = 'login failed: ' + JSON.stringify(data);
+    log('REST login failed: ' + JSON.stringify(data));
+  }
+}
+
+function connectSocket() {
+  if (!token) {
+    alert('Log in first - the socket handshake needs a token.');
+    return;
+  }
+  socket = io({ auth: { token } });
+
+  socket.on('connect', () => {
+    document.getElementById('status').textContent = 'connected (' + socket.id + ')';
+    document.getElementById('status').className = 'ok';
+    log('socket connected: ' + socket.id);
+  });
+
+  socket.on('connect_error', (err) => {
+    document.getElementById('status').textContent = 'connect_error';
+    document.getElementById('status').className = 'bad';
+    log('connect_error: ' + err.message);
+  });
+
+  socket.on('disconnect', (reason) => {
+    document.getElementById('status').textContent = 'disconnected';
+    document.getElementById('status').className = 'bad';
+    log('socket disconnected: ' + reason);
+  });
+
+  // The three events the server can push, see src/config/socket/index.js
+  socket.on('notification:new', (payload) => log('notification:new -> ' + JSON.stringify(payload)));
+  socket.on('task:created', (payload) => log('task:created -> ' + JSON.stringify(payload)));
+  socket.on('task:updated', (payload) => log('task:updated -> ' + JSON.stringify(payload)));
+  socket.on('task:deleted', (payload) => log('task:deleted -> ' + JSON.stringify(payload)));
+}
+
+function joinBoard() {
+  if (!socket) { alert('Connect the socket first.'); return; }
+  const boardId = document.getElementById('boardId').value;
+  socket.emit('board:join', boardId);
+  log('emitted board:join for ' + boardId);
+}
+
+async function createTask() {
+  const board = document.getElementById('boardId').value;
+  const title = document.getElementById('taskTitle').value;
+  const assignedTo = document.getElementById('assignedTo').value || undefined;
+
+  const res = await fetch('/api/v1/tasks/CreateTask', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify({ title, board, assignedTo, createdBy: undefined })
+  });
+  const data = await res.json();
+  log('REST CreateTask response -> ' + JSON.stringify(data));
+}
+</script>
+
+</body>
+</html>
