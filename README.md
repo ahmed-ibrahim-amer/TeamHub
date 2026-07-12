@@ -1,102 +1,347 @@
-````/*
-Make sure i have all of this to make optimization
-Pagination
+# 🚀 TeamHub API
 
-Indexes
+A scalable Task Management REST API built with **Node.js**, **Express.js**, and **MongoDB**.
 
-Caching
+TeamHub helps organizations manage teams, projects, boards, and tasks with secure authentication, real-time notifications, and file attachments.
 
-Projection
+---
 
-Aggregation
-**\`
+# ✨ Features
+
+- 🔐 JWT Authentication
+- 👥 User Management
+- 🏢 Organizations
+- 👨‍💻 Teams
+- 📁 Projects
+- 📋 Boards
+- ✅ Tasks
+- 💬 Comments
+- 📎 Attachments (Cloudinary)
+- 🔔 Real-time Notifications (Socket.io)
+- 🔒 Role-based Authorization
+- 📑 API Validation
+- 📝 Logging
+- ⚡ Rate Limiting
+- 🛡 Helmet Security
+- 🌐 CORS Support
+- 🧪 Jest Testing (Coming Soon)
+- 📚 Swagger Documentation (Coming Soon)
+
+---
+
+# 🛠 Tech Stack
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+
+### Authentication
+
+- JWT
+- bcrypt
+
+### File Upload
+
+- Cloudinary
+
+### Realtime
+
+- Socket.io
+
+### Validation
+
+- Joi
+
+### Security
+
+- Helmet
+- CORS
+- Express Rate Limit
+- Compression
+
+### Logging
+
+- Winston
+
+---
+
+# 📂 Project Structure
+
+```
+TeamHub
+│
+├── Controllers
+├── Models
+├── Routes
+├── Middleware
+├── Services
+├── Utils
+├── Config
+├── Socket
+├── Tests
+├── uploads
+├── app.js
+├── server.js
+└── package.json
 ```
 
+---
 
+# 📊 Database Design
 
+```
+User
+│
+├── Organization
+│      │
+│      ├── Team
+│      │      │
+│      │      ├── Project
+│      │      │      │
+│      │      │      ├── Board
+│      │      │      │      │
+│      │      │      │      ├── Task
+│      │      │      │      │      │
+│      │      │      │      │      ├── Comment
+│      │      │      │      │      ├── Attachment
+│      │      │      │      │      └── Notification
+```
 
-Cloudinary Onboarding Prompt
+---
 
-Here are my Cloudinary credentials:
-Cloud Name: negwwxlc
-API Key: 765398542232882
-API Secret: 3pG1g85S4mHZg21IyXh8o_RBzDw
+# 🔐 Authentication
 
-You are helping a first-time Cloudinary user who already has an account set up their integration from scratch. Follow these rules:
+The API uses:
 
-1. Start by asking: "What programming language are you using?" Wait for the answer before proceeding.
+- Access Token
+- Refresh Token
+- Role-based Authorization
 
-2. Follow the steps below in order - complete each step fully before moving to the next.
+Protected routes require:
 
-3. Wait for user responses - When you ask a question, stop and wait for their answer. Do not proceed until you get a response.
+```
+Authorization: Bearer <access_token>
+```
 
-4. Execute commands - When there is a command to run, show it and run it immediately after showing it.
+---
 
-5. Recover first, then stop if needed (strict) - On command failure: retry once, then try one corrected variant once. If still failing, STOP and wait for user confirmation. Do not continue and do not assume success.
+# 📦 Installation
 
-6. Manual-run handoff (strict) - If you cannot run a command, ask the user to run exactly one command, then STOP and wait for confirmation. Full output is optional.
+Clone repository
 
-7. No progress without confirmation - After a failure or manual-run handoff, do not proceed until the user provides explicit confirmation.
+```bash
+git clone https://github.com/USERNAME/TeamHub.git
+```
 
-8. One question at a time - If you need to ask something, ask only one question and wait.
+Move into project
 
-9. Step-by-step explanation - Do not explain the whole plan upfront. Explain each step briefly as you work through it, without meta disclaimers.
+```bash
+cd TeamHub
+```
 
-10. Actual results only (strict) - Never provide expected, sample, or hypothetical command output when a step requires execution results. Only report real output produced by commands that were actually run (by the agent or by the user during manual handoff). If real output is unavailable and the user confirms to continue, continue without fabricating output.
+Install packages
 
-11. Instruction priority and compliance check (strict) - The rules in this first section are mandatory for every later step. Priority order is: user message > step-specific rule > global rule. Before writing any analysis, verify you followed execution instructions and have real command output when required. If not, go back, execute, and collect output first.
+```bash
+npm install
+```
 
-12. Do not open transformed URLs (strict) - The transformed image URL is for the user to open manually. Never open or navigate to it.
+Create `.env`
 
-STEP 1 — Install the Cloudinary SDK
+```env
+PORT=3000
 
-Show the exact install command for the user's language and run it. Do not explain the package manager in detail. Mention the command and execute it. If install fails, STOP and wait for user confirmation before doing anything else.
+MONGO_URI=
 
-STEP 2 — Credentials
+ACCESS_JWT_TOKEN=
 
-The user will need three values from Cloudinary:
-- Cloud name
-- API key
-- API secret
+REFRESH_JWT_TOKEN=
 
-Tell the user to get these from: https://console.cloudinary.com/app/settings/api-keys
+CLOUDINARY_CLOUD_NAME=
 
-Ask the user to provide these three values and store them for use in the script. Do not move to the next step until you have collected all three credential values from the user.
+CLOUDINARY_API_KEY=
 
-STEP 3 — Write the script
+CLOUDINARY_API_SECRET=
 
-Create a single script file in the user's chosen language that does all of the following in sequence:
+CLIENT_URL=
+```
 
-1. Configure Cloudinary — Use an inline configuration block (no separate .env file). For this onboarding flow, inline credentials in the script are required. Use the real credential values collected in Step 2 by default. Use placeholder values only if the user does not want to provide credentials:
-   - Cloud name: YOUR_CLOUD_NAME
-   - API key: YOUR_API_KEY
-   - API secret: YOUR_API_SECRET
+Run project
 
-2. Upload an image — Upload a sample image URL from Cloudinary's demo domains (use images from res.cloudinary.com/demo/). Print the secure URL and public ID of the uploaded image to the console.
+```bash
+npm start
+```
 
-3. Get image details — After uploading, fetch and print the following metadata about the uploaded image: width, height, format, and file size in bytes.
+or
 
-4. Transform the image — Generate a transformed version of the image URL using both f_auto (automatic format selection) and q_auto (automatic quality). Briefly explain in a code comment what each transformation does. Print a final success message to the console, e.g. "Done! Click link below to see optimized version of the image. Check the size and the format." Print the transformed URL for the user to open.
+```bash
+nodemon server.js
+```
 
-STEP 4 — Make the script executable
+---
 
-Show the chmod command to make the script executable and run it. Then run the script itself. If either command fails or cannot be run by the agent, ask the user to run that one command and STOP and wait for user confirmation before continuing.
+# 📌 API Modules
 
-STEP 5 — Review the results
+## Authentication
 
-After the script runs, show the complete actual output and provide commentary on what happened. Explain what each part of that real output means and confirm that the Cloudinary integration is working correctly. Point out the key information like the uploaded image URL, the metadata, and the transformed image link. Ask the user to check transformed-image size/format by opening the transformed URL.
+- Register
+- Login
+- Refresh Token
+- Logout
 
-If the script was not executed successfully, do not provide a "what you can expect" section and do not fabricate output. Briefly state what is missing and strongly suggest the user paste the script output for a detailed explanation.
+---
 
-For this step, follow this exact gate:
-1. Verify whether script output is available in this session.
-2. If output is available, explain results and tie the explanation to the actual output shown.
-3. If output is unavailable, finish Step 5 without blocking and strongly suggest the user paste output for detailed explanation.
-4. The transformed-image size/format check is a user follow-up after opening the transformed URL.
+## Users
 
-FORMATTING RULES FOR THE SCRIPT:
+- Get Profile
+- Update Profile
+- Delete Account
 
-- The entire flow must be in one file.
-- If placeholders are used, clearly mark the three placeholder values (YOUR_CLOUD_NAME, YOUR_API_KEY, YOUR_API_SECRET) with a comment like "← replace this" so the user can find them instantly.
-- The script must work by running it directly — no extra setup steps required beyond installing the SDK and filling in the credentials.
-- Do not use a separate .env file or any environment variable exports outside the script.
+---
+
+## Organizations
+
+- Create Organization
+- Update Organization
+- Delete Organization
+- Get Organization
+
+---
+
+## Teams
+
+- Create Team
+- Add Members
+- Remove Members
+- Update Team
+
+---
+
+## Projects
+
+- Create Project
+- Update Project
+- Delete Project
+- Get Projects
+
+---
+
+## Boards
+
+- Create Board
+- Update Board
+- Delete Board
+
+---
+
+## Tasks
+
+- Create Task
+- Update Task
+- Delete Task
+- Assign Task
+- Change Status
+- Set Priority
+
+---
+
+## Comments
+
+- Add Comment
+- Edit Comment
+- Delete Comment
+
+---
+
+## Attachments
+
+- Upload File
+- Delete File
+
+---
+
+## Notifications
+
+- Real-time Notifications
+- Read Notification
+- Mark All As Read
+
+---
+
+# ⚡ Realtime Events
+
+Socket.io is used for:
+
+- Task Created
+- Task Updated
+- Task Deleted
+- Comment Added
+- Notification Sent
+
+---
+
+# 🛡 Security
+
+- JWT Authentication
+- Password Hashing (bcrypt)
+- Helmet
+- Rate Limiting
+- Input Validation
+- Secure Environment Variables
+
+---
+
+# 📈 Performance
+
+- Pagination
+- Filtering
+- Sorting
+- Field Limiting
+- Population
+- Indexing
+- Compression
+
+---
+
+# 🧪 Testing
+
+Testing will be implemented using:
+
+- Jest
+- Supertest
+
+---
+
+# 📚 API Documentation
+
+Swagger documentation will be added soon.
+
+---
+
+# 🚀 Future Improvements
+
+- Redis Caching
+- Email Notifications
+- Activity Logs
+- Search
+- Webhooks
+- Docker
+- CI/CD
+- Kubernetes
+- Microservices Version
+
+---
+
+# 👨‍💻 Author
+
+Ahmed Ibrahim Amer
+
+Backend Node.js Developer
+
+---
+
+# ⭐ Support
+
+If you like this project, don't forget to give it a ⭐ on GitHub.
