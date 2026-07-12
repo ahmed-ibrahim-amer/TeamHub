@@ -1,0 +1,16 @@
+const fileFilter = (req,file,cb)=>{
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "image/webp",
+        "application/pdf",
+    ];
+    if(allowedTypes.includes(file.mimetype)){
+        cb(null ,true);
+    }else{
+        cb(new Error('Only images and pdf files are allowed'),false);
+    }
+};
+
+module.exports = fileFilter;
