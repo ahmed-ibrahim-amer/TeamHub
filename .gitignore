@@ -9,3 +9,7 @@ USER_EMAIL=
 USER_PASSWORD=
 
 PORT=3000
+
+
+.env
+node_modules

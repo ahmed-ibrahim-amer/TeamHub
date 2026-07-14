@@ -1,0 +1,13 @@
+*   [33mf59d917[m[33m ([m[1;35mrefs/stash[m[33m)[m WIP on feature/authentication: 78c2843 Remove .env from repository
+[31m|[m[32m\[m  
+[31m|[m * [33me611969[m index on feature/authentication: 78c2843 Remove .env from repository
+[31m|[m[31m/[m  
+* [33m78c2843[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/feature/authentication[m[33m, [m[1;32mfeature/authentication[m[33m)[m Remove .env from repository
+[32m|[m * [33mef86aa6[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Revise README.md for improved project clarity
+[32m|[m *   [33m8d07395[m Merge pull request #1 from ahmed-ibrahim-amer/feature/authentication
+[32m|[m [34m|[m[32m\[m  
+[32m|[m [34m|[m[32m/[m  
+[32m|[m[32m/[m[34m|[m   
+* [34m|[m [33mb509a72[m Add socket.io notifications
+[34m|[m[34m/[m  
+* [33m688f1c7[m first commit
